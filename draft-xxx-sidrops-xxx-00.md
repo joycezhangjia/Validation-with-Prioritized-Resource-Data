@@ -81,10 +81,10 @@ TBD
 This section outlines the requirements for extending the RPKI architecture to support the processing and propagation of RPKI data with multiple priority levels. These requirements are necessary to enable differentiated handling of routing validation results based on their perceived trustworthiness, such as those derived from authoritative sources (e.g., RPKI ROAs) versus inferred or supplemental sources (e.g., AI-generated data).
 
 ## Priority Setting
-RPKI Relying Party (RP) software MUST support the assignment of a priority level to each validated RPKI object. The priority SHOULD be configurable based on the data source (e.g., RPKIsigned, locally imported, or AI-inferred). The priority value MUST be represented in a standardized format to ensure interoperability.
+Implementations processing RPKI data on local cache (e.g., Relying Party software) MUST support the assignment of a priority level to each validated RPKI object. The priority SHOULD be configurable based on the data source (e.g., RPKIsigned, locally imported, or AI-inferred). The priority value MUST be represented in a standardized format to ensure interoperability.
 
 ## Multi-Priority Data Merge
-When multiple representations of the same prefix-origin pair or customer-provider list exist with different priorities, RP software MUST be capable of merging them according to a consistent policy. The merge policy SHOULD prefer high-priority data and MAY allow low-priority data to be used only when high-priority data is absent.
+Implementations MUST merge data from multiple sources according to a defined algorithm. This algorithm SHOULD specify how to handle conflicts, including rules for merging data of the same priority and for superseding lower-priority data with higher-priority data.
 
 ## SLURM Support for Priority Marking
 The SLURM mechanism MUST be extended to allow local exceptions and additions to include a priority attribute. This enables network operators to override or supplement RPKI data with local policies that reflect differentiated trust levels.
@@ -100,15 +100,9 @@ router-to-server association
 Network operators SHOULD choose which implementation to deploy based on their specific operational preferences and infrastructure.
 
 ## ROV/ASPA Validation with Priority Awareness
-ROV and ASPA validation processes MUST be enhanced to support a multi-priority data model. The validation procedure MUST operate as a two-stage process to maximize the utility of available data while respecting the inherent trust level of each source.
+ROV and ASPA validation processes MUST be enhanced to support a multi-priority data model. The validation process SHOULD annotate the resulting validation state (Valid, Invalid) with an indication of the assurance level, which identifies the priority tier of the data that was used to reach that conclusion. For example, an "Invalid" result derived from a local override (high-priority) MUST be distinguishable from an "Invalid" result derived from inferred data (low-priority). 
 
-1. Primary Validation with High-Priority Data: The validator MUST first perform validation using only the high-priority data available for a route. The outcome of this primary validation MUST be considered determinative and final if the state is either Valid or Invalid.
-
-2. Secondary Validation with Low-Priority Data: If and only if the outcome of the primary validation is Unknown, the validator MAY perform a secondary validation using low-priority data. The outcome of this secondary validation (Valid, Invalid, or Unknown) MUST then be adopted as the final validation state for the route. 
-
-Annotation of Validation Outcome: The validation process MUST annotate the resulting validation state (Valid, Invalid) with an indication of the assurance level, which identifies the priority tier of the data that was used to reach that conclusion. For example, an "Invalid" result derived from a local override (high-priority) MUST be distinguishable from an "Invalid" result derived from inferred data (low-priority). 
-
-This annotated validation state MUST then be used to inform subsequent routing policy actions. Implementations SHOULD provide flexible policy mechanisms that allow network operators to define actions (e.g., reject, depreference, warn, accept) based on both the validation state (e.g., Invalid) and its associated assurance level (e.g., High or Low).
+This annotated validation state SHOULD then be used to inform subsequent routing policy actions. Implementations SHOULD provide flexible policy mechanisms that allow network operators to define actions (e.g., reject, depreference, warn, accept) based on both the validation state (e.g., Invalid) and its associated assurance level (e.g., High or Low).
 
 ## Router Handling of Priority-Based Invalid Routes
 BGP speakers SHOULD support configurable policies to handle invalid routes based on the priority of the validation data. For example, routes invalidated by high-priority data MAY be deprioritized or discarded, while those invalidated by low-priority data MAY be retained with a warning.
