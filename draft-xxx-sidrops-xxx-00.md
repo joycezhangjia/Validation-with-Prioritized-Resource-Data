@@ -53,19 +53,19 @@ However, current RPKI technology does not support such operations. Regardless of
 This document proposes a framework shown as the following figure. It sopports RPKI-based validation with prioritized resource data. 
 
 ~~~
-          +-----------------+
-          | RP/Cache server |
-          | +-------------+ |
-          | | prioritized | |<-----RPKI data
-          | | resource    | |<-----AI data
-          | | data        | |<-----Locally imported data
-          | +-------------+ |
-          +-----------------+
-            /             \
-           / RTR PDUs with \
-          / priority levels \
-         /                   \
- +-----\/-----------+        +-----\/-----------+
+                +-----------------+
+                | RP/Cache server |
+                | +-------------+ |
+                | | prioritized | |<-----RPKI data
+                | | resource    | |<-----AI data
+                | | data        | |<-----Locally 
+                | +-------------+ |      imported data
+                +-----------------+
+                  /             \
+                 / RTR PDUs with \
+                / priority levels \
+               /                   \
+ +-----------\/-----+        +------\/----------+
  |      Router      |        |      Router      |
  |+----------------+|        |+----------------+|
  ||route validation||        ||route validation||
@@ -75,7 +75,17 @@ This document proposes a framework shown as the following figure. It sopports RP
  +------------------+        +------------------+
 ~~~
 
-TBD
+The RP/Cache server collects and manages resouce data (e.g., ROA/ASPA) which are from different sources such as RPKI repository, AI inference, and local import. The data from different sources will be set to different priorities. The RP/Cache server needs to decide how to merge these data from different sources. 
+
+The data will be syncronized from the RP/Cache server to routers through tools like RTR. Routers will do BGP route validation with priorities being taken into consideration. Particularly, the validaiton output for a route can be Valid, Unknown, or Invalid-*level*. A route validated as invalid will be marked with Invalid as well as a credibility level of the validation result. For example, "Invalid-*1*" means the validation result of invalid is derived based on the source data with the priority of *1* and thus has a credibility level of *1*. 
+
+Network operators can do configurations on routers to taken different policies on the invalid routes with different credibility levels. For example, suppose there are two ROA records on a router: 1) the prefix of 192.0.1.0/24 is authorized to AS 65001, which has a high priority of *1* and 2) the prefix of 192.0.2/24 is authorized to AS 65002, which has a relatively low priority of *2*. For the route with the prefix of 192.0.1.0/24 and the origin of AS 65003, the validation result will be invalid-*1*. Operators can configure the router to discard the route because the validation result is with a high credibility level. For the route with the prefix of 192.0.2.0/24 and the origin of AS 65003, the validation result will be invalid-*2*. Operators can choose to set a lower priority for this route to influence the route selection outcome. This is because the validation result is with a relatively low credibility level and adopting a conservative handling policy to the route may be safer. 
+
+The proposed framework brings two main benefits: 
+
+- Enhancing BGP route handling after route validation. When the resource data are from multiple data sources with different levels of credibility, operators can implement customized priority settings to the resource data and apply different handling policies.
+
+- Improving early deployment benefits and promoting the deployment of RPKI-based routing validation techniques. When the registration rate of RPKI data is not high, operators can supplement data with techniques like AI while still being able to take "discarding" action on invalid routes with high credibility levels.
 
 # Requirements for Multi-Priority RPKI ROV
 This section outlines the requirements for extending the RPKI architecture to support the processing and propagation of RPKI data with multiple priority levels. These requirements are necessary to enable differentiated handling of routing validation results based on their perceived trustworthiness, such as those derived from authoritative sources (e.g., RPKI ROAs) versus inferred or supplemental sources (e.g., AI-generated data).
