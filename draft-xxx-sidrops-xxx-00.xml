@@ -16,16 +16,64 @@
     <seriesInfo name="Internet-Draft" value="draft-xxx-sidrops-xxx-00"/>
    
 
-    <author initials="xxx" surname="xxx" fullname="xxx">
-        <organization>xxx</organization>
+    <author initials="J." surname="Zhang" fullname="Jia Zhang">
+        <organization>Zhongguancun Laboratory</organization>
         <address>
           <postal>
-            <city>xxx</city>
-            <country>xxx</country>
+            <city>Beijing</city>
+            <country>China</country>
           </postal>
-          <email>xxx</email>
+          <email>zhangj@mail.zgclab.edu.cn</email>
         </address>
       </author>
+    
+    <author initials="M." surname="Xu" fullname="Mingwei Xu">
+        <organization>CERNET</organization>
+        <address>
+          <postal>
+            <city>Beijing</city>
+            <country>China</country>
+          </postal>
+          <email>xmw@cernet.edu.cn</email>
+        </address>
+      </author>
+    
+    <author initials="N." surname="Geng" fullname="Nan Geng">
+        <organization>Huawei</organization>
+        <address>
+          <postal>
+            <city>Beijing</city>
+            <country>China</country>
+          </postal>
+          <email>gengnan@huawei.com</email>
+        </address>
+      </author>
+    
+    <author initials="C." surname="Xie" fullname="Chongfeng Xie">
+        <organization>China Telecom</organization>
+        <address>
+          <postal>
+            <city>Beijing</city>
+            <country>China</country>
+          </postal>
+          <email>xiechf@chinatelecom.cn</email>
+        </address>
+      </author>
+
+    <author initials="Y." surname="Wang" fullname="Yangyang Wang">
+        <organization>Tsinghua University</organization>
+        <address>
+          <postal>
+            <city>Beijing</city>
+            <country>China</country>
+          </postal>
+          <email>wangyy@cernet.edu.cn</email>
+        </address>
+      </author>
+    
+    
+    
+    
 
 
 
@@ -49,10 +97,10 @@
          use by search engines. -->
 
     <abstract>
-      <t>Based on RPKI ROAs, Route Origin Validation (ROV) is a practical solution to address prefix origin hijacking. During ROV operations, the data 
-      used may come from local sources other than ROAs. These data sources can vary in terms of credibility, and ROV operations may require different 
-      response actions for invalid or unknown routes. This document describe an enhancement of ROV with multi-level priority, and outlines the use cases, 
-      framework, and requirements for ROV operations that involve multi-level priority.</t>
+      <t>Based on RPKI ROAs, Route Origin Validation (ROV) provides a practical solution to address prefix origin hijacking. During ROV operations, 
+      validation data may be sourced not only from issued ROAs but also from other local sources. These data sources can vary in terms of credibility, 
+      and ROV operations may therefore require different response actions for invalid or unknown routes. This document describes an enhancement of ROV 
+      with multi-level priority, and outlines relevant use cases, framework, and requirements for ROV operations that involve multi-level priority.</t>
     </abstract>
  
   </front>
